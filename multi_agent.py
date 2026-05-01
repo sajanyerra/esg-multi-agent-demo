@@ -9,7 +9,7 @@ from langchain_core.messages import HumanMessage
 
 load_dotenv()
 
-PI_BASE = "http://localhost:8000/piwebapi"
+PI_BASE = os.getenv("PI_BASE", "http://localhost:8000") + "/piwebapi"
 llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"))
 
 

@@ -4,10 +4,11 @@ import requests
 import time
 from langchain_core.messages import HumanMessage
 from multi_agent import app as agent_app
+import os
 
 st.set_page_config(page_title="ESG Intelligence", page_icon="🌱", layout="wide")
 
-PI_BASE = "http://localhost:8000/piwebapi"
+PI_BASE = os.getenv("PI_BASE", "http://localhost:8000") + "/piwebapi"
 
 # ============================================================
 # MINIMAL STYLING
