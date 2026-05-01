@@ -1,16 +1,5 @@
 fastapi
-uvicorn[standard]
+uvicorn
 pydantic
 numpy
 python-dateutil
-requests
-python-dotenv
-groq
-langchain
-langchain-core
-langchain-community
-langchain-groq
-langgraph
-streamlit
-pandas
-matplotlib
