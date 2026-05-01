@@ -2,7 +2,7 @@
 
 A demo of agentic AI for industrial ESG compliance. Three AI agents work together to analyze sensor data from a simulated PI server and generate carbon emissions compliance reports.
 
-**🔗 [Live Demo](https://your-streamlit-url.streamlit.app)** · **🖥️ [PI Server](https://pi-server-demo.onrender.com)**
+**🔗 [Live Demo](https://esg-multi-agent-demo-vers.streamlit.app/)** · **🖥️ [PI Server](https://esg-multi-agent-demo.onrender.com/)**
 
 ---
 
