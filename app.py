@@ -119,7 +119,7 @@ header_col1, header_col2 = st.columns([3, 1])
 with header_col1:
     st.markdown("##### Your facility at a glance")
 with header_col2:
-    st.link_button("🖥️  Open PI Server", "http://localhost:8000", use_container_width=True)
+    st.link_button("🖥️  Open PI Server", "https://esg-multi-agent-demo.onrender.com/", use_container_width=True)
 
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("Sensors online", len(sensors))
