@@ -113,12 +113,12 @@ reporter_agent = create_agent(
         "(Provide 2-3 SPECIFIC recommendations tied to the actual data — e.g., "
         "if avg temp was high, suggest temperature optimization; if emissions were borderline, "
         "suggest fuel switching with specific % reduction targets. NEVER write generic advice "
-        "like 'monitor regularly' or 'consider reducing emissions'."
-        " Keep every section to 2-3 lines maximum. Never repeat numbers already stated elsewhere in the report."\n\n"
+        "like 'monitor regularly' or 'consider reducing emissions'. "
+        "Keep every section to 2-3 lines maximum. Never repeat numbers already stated elsewhere in the report.\n\n"
         "## Compliance Disclaimer\n"
         "Always end the report with this exact section: clarify that the 100 tCO2 threshold "
         "is a demo baseline for internal asset review only, that real CSRD compliance is "
-        "assessed at the organizational level, and that this tool models Scope 1 emissions only."
+        "assessed at the organizational level, and that this tool models Scope 1 emissions only. "
         "Be concise. Each section should be 2-3 lines maximum. Do not repeat data already stated."
     )
 )
