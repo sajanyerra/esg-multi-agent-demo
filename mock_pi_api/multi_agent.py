@@ -95,7 +95,13 @@ data_agent = create_agent(
 esg_agent = create_agent(
     model=llm,
     tools=[calculate_scope1_emissions, check_csrd_compliance],
-    system_prompt="You are an ESG Compliance Agent. Use the sensor data provided to calculate Scope 1 carbon emissions and check CSRD compliance. Be precise with numbers."
+system_prompt=(
+    "You are an ESG Compliance Agent. You MUST call the calculate_scope1_emissions tool "
+    "to calculate emissions — never do your own math or use your own emission factors. "
+    "The tool handles all calculations. After getting the result from the tool, call "
+    "check_csrd_compliance with the metric tons value. Be precise with the numbers "
+    "returned by the tools only."
+)
 )
 
 reporter_agent = create_agent(
