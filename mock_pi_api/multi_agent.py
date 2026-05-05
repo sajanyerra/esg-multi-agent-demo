@@ -57,6 +57,7 @@ def calculate_scope1_emissions(fuel_type: str, consumption: float) -> str:
 
 
 @tool
+@tool
 def check_csrd_compliance(co2_metric_tons: float, context: str = "asset") -> str:
     """Check CO2 emissions against a context-appropriate demo threshold.
     context: 'asset' for single asset analysis (threshold: 100 tCO2)
@@ -65,6 +66,13 @@ def check_csrd_compliance(co2_metric_tons: float, context: str = "asset") -> str
     Real CSRD applies at the company level for organisations with
     1,000+ employees or €450M+ turnover — not per asset or tonnage cutoff.
     """
+    # Handle case where model passes a math expression as string
+    if isinstance(co2_metric_tons, str):
+        try:
+            co2_metric_tons = float(eval(co2_metric_tons))
+        except Exception:
+            return "Error: could not parse co2_metric_tons value."
+
     threshold = 500.0 if context == "facility" else 100.0
     label = "facility-wide demo baseline" if context == "facility" else "per-asset demo baseline"
 
@@ -99,8 +107,9 @@ system_prompt=(
     "You are an ESG Compliance Agent. You MUST call the calculate_scope1_emissions tool "
     "to calculate emissions — never do your own math or use your own emission factors. "
     "The tool handles all calculations. After getting the result from the tool, call "
-    "check_csrd_compliance with the metric tons value. Be precise with the numbers "
-    "returned by the tools only."
+    "check_csrd_compliance with the TOTAL as a single float number — never pass a math "
+    "expression like '10.1 + 8.04'. Always sum the values yourself first and pass only "
+    "the final number. Be precise with the numbers returned by the tools only."
 )
 )
 
