@@ -11,4 +11,4 @@ langchain-core
 langchain-groq
 langgraph
 streamlit
-langchain-cerebras
+langchain-groq
