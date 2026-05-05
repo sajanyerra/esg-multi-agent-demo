@@ -55,8 +55,6 @@ def calculate_scope1_emissions(fuel_type: str, consumption: float) -> str:
     co2_kg = consumption * factors[fuel_type]
     return f"Scope 1 CO2 emissions: {co2_kg:.2f} kg CO2 ({co2_kg/1000:.3f} metric tons) from {consumption} units of {fuel_type}"
 
-
-@tool
 @tool
 def check_csrd_compliance(co2_metric_tons: float, context: str = "asset") -> str:
     """Check CO2 emissions against a context-appropriate demo threshold.
