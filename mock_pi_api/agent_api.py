@@ -81,7 +81,8 @@ def run_analysis(req: AnalysisRequest):
             "messages": messages
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        raise HTTPException(status_code=500, detail=str(e) + "\n" + traceback.format_exc())
 
 
 @api.post("/analyze/facility")
@@ -141,7 +142,8 @@ def run_facility_analysis(req: FacilityRequest):
             "categories": list(categories.keys())
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        raise HTTPException(status_code=500, detail=str(e) + "\n" + traceback.format_exc())
 
 
 if __name__ == "__main__":
