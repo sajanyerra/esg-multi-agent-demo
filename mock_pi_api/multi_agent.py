@@ -1,7 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
-from langchain_groq import ChatGroq
+from langchain_cerebras import ChatCerebras
 from langchain.tools import tool
 from langchain.agents import create_agent
 from langgraph.graph import StateGraph, END, MessagesState
@@ -10,7 +10,7 @@ from langchain_core.messages import HumanMessage
 load_dotenv()
 
 PI_BASE = os.getenv("PI_BASE", "http://localhost:8000") + "/piwebapi"
-llm = ChatGroq(model="llama-3.3-70b-versatile", api_key=os.getenv("GROQ_API_KEY"))
+llm = ChatCerebras(model="llama-3.3-70b", api_key=os.getenv("CEREBRAS_API_KEY"))
 
 
 # ============================================================
