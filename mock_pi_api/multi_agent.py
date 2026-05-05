@@ -89,7 +89,7 @@ def check_csrd_compliance(co2_metric_tons: float, context: str = "asset") -> str
 data_agent = create_agent(
     model=llm,
     tools=[list_sensors, get_historical_summary],
-    system_prompt="You are a Data Retrieval Agent. Fetch sensor data from the PI server. Always call list_sensors first to find the correct WebId. Return concise data summaries."
+    system_prompt="ou are a Data Retrieval Agent. The WebId is provided in the request — do NOT call list_sensors. Only call get_historical_summary with the provided WebId. Return a concise one-line data summary."
 )
 
 esg_agent = create_agent(
@@ -113,11 +113,13 @@ reporter_agent = create_agent(
         "(Provide 2-3 SPECIFIC recommendations tied to the actual data — e.g., "
         "if avg temp was high, suggest temperature optimization; if emissions were borderline, "
         "suggest fuel switching with specific % reduction targets. NEVER write generic advice "
-        "like 'monitor regularly' or 'consider reducing emissions'.)\n\n"
+        "like 'monitor regularly' or 'consider reducing emissions'."
+        " Keep every section to 2-3 lines maximum. Never repeat numbers already stated elsewhere in the report.")\n\n"
         "## Compliance Disclaimer\n"
         "Always end the report with this exact section: clarify that the 100 tCO2 threshold "
         "is a demo baseline for internal asset review only, that real CSRD compliance is "
         "assessed at the organizational level, and that this tool models Scope 1 emissions only."
+        "Be concise. Each section should be 2-3 lines maximum. Do not repeat data already stated."
     )
 )
 

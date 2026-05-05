@@ -59,7 +59,7 @@ export default function Navbar() {
             LinkedIn
           </a>
           <a
-            href="http://localhost:8000"
+            href="https://esg-multi-agent-demo.onrender.com"
             target="_blank"
             rel="noreferrer"
             className="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-1.5 rounded-lg transition-colors text-sm"
