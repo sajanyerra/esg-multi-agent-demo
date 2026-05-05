@@ -10,7 +10,7 @@ from langchain_core.messages import HumanMessage
 load_dotenv()
 
 PI_BASE = os.getenv("PI_BASE", "http://localhost:8000") + "/piwebapi"
-llm = ChatCerebras(model="llama-3.3-70b", api_key=os.getenv("CEREBRAS_API_KEY"))
+llm = ChatCerebras(model="llama3.1-8b", api_key=os.getenv("CEREBRAS_API_KEY"))
 
 
 # ============================================================
