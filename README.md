@@ -2,7 +2,7 @@
 
 A full-stack AI application that analyzes industrial sensor data and generates ESG carbon emissions compliance reports using multi-agent LLM orchestration.
 
-**Live:** https://esg-intelligence.vercel.app
+**Live:** esg-multi-agent-demo.vercel.app
 
 ---
 
