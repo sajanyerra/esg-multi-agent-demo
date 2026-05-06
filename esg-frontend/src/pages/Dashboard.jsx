@@ -1,153 +1,121 @@
-import { useEffect, useState, useRef } from 'react'
-import { motion } from 'framer-motion'
-import { getSensors, getSensorValue } from '../api/client'
-import SensorCard from '../components/SensorCard'
-import { Link } from 'react-router-dom'
-
-// Cache outside component so it persists between tab switches
-let cachedSensors = []
-let cachedValues = {}
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { RefreshCw, AlertCircle } from 'lucide-react';
+import { useSensors } from '../context/SensorContext';
 
 export default function Dashboard() {
-  const [sensors, setSensors] = useState(cachedSensors)
-  const [values, setValues] = useState(cachedValues)
-  const [loading, setLoading] = useState(cachedSensors.length === 0)
-  const [error, setError] = useState(null)
-  const intervalRef = useRef(null)
-
-  useEffect(() => {
-    if (cachedSensors.length === 0) {
-      loadData()
-    } else {
-      loadValues(cachedSensors)
-    }
-    intervalRef.current = setInterval(() => loadValues(cachedSensors), 5000)
-    return () => clearInterval(intervalRef.current)
-  }, [])
-
-  const loadData = async () => {
-    try {
-      const { data } = await getSensors()
-      cachedSensors = data.Items
-      setSensors(cachedSensors)
-      await loadValues(cachedSensors)
-      setLoading(false)
-    } catch {
-      setError('Cannot reach the PI server.')
-      setLoading(false)
-    }
-  }
-
-  const loadValues = async (list) => {
-    const s = list || sensors
-    const entries = await Promise.all(
-      s.map(async (sensor) => {
-        try {
-          const { data } = await getSensorValue(sensor.WebId)
-          return [sensor.WebId, data.Value]
-        } catch {
-          return [sensor.WebId, null]
-        }
-      })
-    )
-    cachedValues = Object.fromEntries(entries)
-    setValues({ ...cachedValues })
-  }
-
-  const categories = {}
-  sensors.forEach((s) => {
-    const n = s.Name.toUpperCase()
-    let cat = 'Other'
-    if (n.includes('BA:') || n.includes('BOILER')) cat = 'Boilers'
-    else if (n.includes('REACTOR') || n.includes('TIC') || n.includes('PIC')) cat = 'Reactors'
-    else if (n.includes('TANK') || n.includes('LIC')) cat = 'Tanks'
-    else if (n.includes('FT-') || n.includes('FIC')) cat = 'Flow Meters'
-    else if (n.includes('PWR') || n.includes('POWER')) cat = 'Power Systems'
-    else if (n.includes('PUMP') || n.includes('VALVE')) cat = 'Equipment'
-    categories[cat] = [...(categories[cat] || []), s]
-  })
-
-  if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="text-gray-400 animate-pulse">Connecting to PI Server...</div>
-    </div>
-  )
-
-  if (error) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="text-red-400">{error}</div>
-    </div>
-  )
+  const navigate = useNavigate();
+  const { sensorsWithValues, loading: sensorsLoading, error: sensorsError } = useSensors();
+  const [lastRefresh, setLastRefresh] = useState(new Date());
 
   return (
-    <div className="min-h-screen bg-gray-950 px-6 py-8 space-y-8">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h1 className="text-3xl font-bold text-white">Facility Dashboard</h1>
-        <p className="text-gray-400 mt-1">
-          {sensors.length} sensors live · updates every 5s
-        </p>
-        <div className="flex justify-center mt-4">
-          <Link
-            to="/"
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors"
-          >
-            Run Report →
-          </Link>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1a2332 0%, #0f172a 100%)', paddingTop: '1.5rem', paddingBottom: '3rem' }}>
+      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem' }}>
+            Live Sensor Feed
+          </h1>
+          <p style={{ color: '#cbd5e1' }}>
+            Real-time industrial sensor readings from your facility
+          </p>
         </div>
-      </motion.div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        {[
-          { label: 'Sensors Online', value: sensors.length, color: 'emerald' },
-          { label: 'Asset Categories', value: Object.keys(categories).length, color: 'blue' },
-          { label: 'Data Source', value: 'PI Server', color: 'purple' },
-          { label: 'Status', value: '● Live', color: 'emerald' },
-        ].map((stat, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-gray-900 border border-gray-800 rounded-xl p-4"
+        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
+              fontWeight: '500',
+              color: '#0f172a',
+              backgroundColor: '#10b981',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+            }}
           >
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-              {stat.label}
-            </div>
-            <div className={`text-2xl font-bold ${
-              stat.color === 'emerald' ? 'text-emerald-400' :
-              stat.color === 'blue' ? 'text-blue-400' :
-              'text-purple-400'
-            }`}>
-              {stat.value}
-            </div>
-          </motion.div>
-        ))}
-      </div>
+            <RefreshCw size={18} />
+            Refresh Now
+          </button>
 
-      {/* Sensors by category */}
-      {Object.entries(categories).map(([cat, items]) => (
-        <div key={cat}>
-          <h2 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-3">
-            {cat} <span className="text-gray-600">({items.length})</span>
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {items.map((sensor, i) => (
-              <SensorCard
+          <button
+            onClick={() => navigate('/')}
+            style={{
+              padding: '0.5rem 1rem',
+              borderRadius: '0.5rem',
+              fontWeight: '500',
+              color: '#f1f5f9',
+              backgroundColor: '#1e293b',
+              border: '1px solid #334155',
+              cursor: 'pointer',
+            }}
+          >
+            Back to Reports
+          </button>
+        </div>
+
+        {sensorsError && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '0.75rem',
+            padding: '1rem',
+            marginBottom: '1.5rem',
+            color: '#f87171',
+          }}>
+            {sensorsError}
+          </div>
+        )}
+
+        <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%' }} />
+          <span style={{ fontSize: '0.875rem', color: '#6ee7b7', fontWeight: '500' }}>
+            {sensorsWithValues.length} sensors online
+          </span>
+        </div>
+
+        {sensorsWithValues.length === 0 ? (
+          <div style={{
+            background: 'rgba(15, 23, 42, 0.4)',
+            borderRadius: '0.75rem',
+            padding: '2rem',
+            textAlign: 'center',
+          }}>
+            <p style={{ color: '#64748b' }}>Loading sensors...</p>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
+            {sensorsWithValues.map((sensor) => (
+              <div
                 key={sensor.WebId}
-                sensor={sensor}
-                value={values[sensor.WebId]}
-                index={i}
-              />
+                onClick={() => navigate('/', { state: { selectedWebid: sensor.WebId } })}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.4)',
+                  border: '1px solid rgba(51, 65, 85, 0.5)',
+                  borderRadius: '0.75rem',
+                  padding: '1.25rem',
+                  cursor: 'pointer',
+                }}
+              >
+                <h3 style={{ fontWeight: '600', color: 'white', marginBottom: '0.5rem' }}>
+                  {sensor.Name}
+                </h3>
+                <div style={{ marginBottom: '0.75rem', padding: '1rem', background: 'rgba(51, 65, 85, 0.2)', borderRadius: '0.5rem' }}>
+                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginBottom: '0.25rem' }}>Current Value</p>
+                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#10b981' }}>
+                    {sensor.value}{sensor.unit ? ` ${sensor.unit}` : ''}
+                  </p>
+                </div>
+                <p style={{ fontSize: '0.875rem', color: '#cbd5e1' }}>
+                  {sensor.Descriptor}
+                </p>
+              </div>
             ))}
           </div>
-        </div>
-      ))}
+        )}
+      </div>
     </div>
-  )
+  );
 }

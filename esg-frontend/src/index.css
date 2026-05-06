@@ -1,1 +1,130 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-gradient-dark text-slate-100;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+.glass-card {
+  @apply bg-slate-900/40 backdrop-blur-md border border-slate-800/50 rounded-xl shadow-lg transition-all duration-300;
+}
+
+.glass-card:hover {
+  @apply bg-slate-900/60 border-slate-700/50 shadow-xl;
+}
+
+.glass-card-emerald {
+  @apply glass-card border-emerald-900/30;
+}
+
+.glass-card-emerald:hover {
+  @apply shadow-glow-emerald;
+}
+
+.btn-primary {
+  @apply px-4 py-2 rounded-lg font-medium text-slate-950 bg-emerald-500 hover:bg-emerald-400 transition-all duration-200 shadow-lg hover:shadow-glow-emerald disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 rounded-lg font-medium text-slate-100 bg-slate-800 hover:bg-slate-700 transition-all duration-200 border border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2;
+}
+
+.btn-ghost {
+  @apply px-3 py-2 rounded-lg font-medium text-emerald-400 hover:bg-emerald-500/10 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-danger {
+  @apply px-4 py-2 rounded-lg font-medium text-slate-100 bg-red-600/20 hover:bg-red-600/30 border border-red-600/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2;
+}
+
+.badge-success {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+}
+
+.badge-warning {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30;
+}
+
+.badge-alert {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30;
+}
+
+.badge-info {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400 border border-blue-500/30;
+}
+
+.input-field {
+  @apply w-full px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700/50 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200;
+}
+
+.input-field:focus {
+  @apply bg-slate-800/70;
+}
+
+.skeleton {
+  @apply bg-slate-800/50 rounded-lg;
+  background: linear-gradient(
+    90deg,
+    rgba(71, 85, 105, 0.3) 25%,
+    rgba(71, 85, 105, 0.5) 50%,
+    rgba(71, 85, 105, 0.3) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.divider {
+  @apply border-t border-slate-800/50;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-900/30;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-600;
+}
+
+.animate-in {
+  animation: slideUp 0.6s ease-out;
+}
+
+.stagger > * {
+  animation: slideUp 0.6s ease-out;
+}
+
+.stagger > *:nth-child(1) { animation-delay: 0s; }
+.stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger > *:nth-child(3) { animation-delay: 0.2s; }
+.stagger > *:nth-child(4) { animation-delay: 0.3s; }
+.stagger > *:nth-child(5) { animation-delay: 0.4s; }
+.stagger > *:nth-child(n + 6) { animation-delay: 0.5s; }
+
+@media (max-width: 768px) {
+  .glass-card {
+    @apply rounded-lg;
+  }
+}
