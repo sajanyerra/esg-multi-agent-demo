@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 
-export function useAnalysis() {
-  const [report, setReport] = useState('');
+export function useAnalysis(initialState = {}) {
+  const [report, setReport] = useState(initialState.report || '');
   const [isLoading, setIsLoading] = useState(false);
-  const [stage, setStage] = useState('idle');
+  const [stage, setStage] = useState(initialState.stage || 'idle');
   const [elapsedTime, setElapsedTime] = useState(0);
   const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);

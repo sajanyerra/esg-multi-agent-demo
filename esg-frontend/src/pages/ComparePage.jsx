@@ -13,31 +13,33 @@ const stateCache = {
     selectedWebid: null,
     selectedSensorName: null,
     report: '',
-    isLoading: false,
     stage: 'idle',
-    elapsedTime: 0,
-    messages: [],
     error: null,
   },
   facility: {
     report: '',
-    isLoading: false,
     stage: 'idle',
-    elapsedTime: 0,
-    messages: [],
     error: null,
   },
 };
 
 export default function ComparePage() {
-  const { sensors, loading: sensorsLoading, error: sensorsError } = useSensors();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('asset');
+  const { sensors, loading: sensorsLoading, error: sensorsError } = useSensors();
 
   const [selectedWebid, setSelectedWebid] = useState(stateCache.asset.selectedWebid);
   const [selectedSensorName, setSelectedSensorName] = useState(stateCache.asset.selectedSensorName);
-  const assetAnalysis = useAnalysis();
-  const facilityAnalysis = useAnalysis();
+
+  const assetAnalysis = useAnalysis({
+    report: stateCache.asset.report,
+    stage: stateCache.asset.stage,
+  });
+
+  const facilityAnalysis = useAnalysis({
+    report: stateCache.facility.report,
+    stage: stateCache.facility.stage,
+  });
 
   const assetTimerRef = useRef(null);
   const facilityTimerRef = useRef(null);
@@ -134,6 +136,26 @@ const handleAssetAnalyze = async () => {
   }
 };
 
+  // Save asset state to cache on every change
+  useEffect(() => {
+    stateCache.asset = {
+      selectedWebid,
+      selectedSensorName,
+      report: assetAnalysis.report,
+      stage: assetAnalysis.stage,
+      error: assetAnalysis.error,
+    };
+  }, [selectedWebid, selectedSensorName, assetAnalysis.report, assetAnalysis.stage, assetAnalysis.error]);
+
+  // Save facility state to cache on every change
+  useEffect(() => {
+    stateCache.facility = {
+      report: facilityAnalysis.report,
+      stage: facilityAnalysis.stage,
+      error: facilityAnalysis.error,
+    };
+  }, [facilityAnalysis.report, facilityAnalysis.stage, facilityAnalysis.error]);
+  
   // Facility audit handler
 const handleFacilityAudit = async () => {
   facilityAnalysis.setIsLoading(true);
