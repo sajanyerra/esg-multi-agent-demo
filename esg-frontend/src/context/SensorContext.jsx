@@ -38,35 +38,23 @@ export function SensorProvider({ children }) {
   useEffect(() => {
     if (sensors.length === 0) return;
 
-    const fetchValues = async () => {
-      try {
-        const updated = await Promise.all(
-          sensors.map(async (sensor) => {
-            try {
-              const valueResponse = await client.get(`/sensors/${sensor.WebId}/value`);
-              return {
-                ...sensor,
-                value: valueResponse?.Value || 'N/A',
-                unit: sensor.EngineeringUnits || '',
-                status: 'active',
-                lastUpdated: new Date().toLocaleTimeString(),
-              };
-            } catch (err) {
-              return {
-                ...sensor,
-                value: 'Error',
-                unit: sensor.EngineeringUnits || '',
-                status: 'error',
-                lastUpdated: new Date().toLocaleTimeString(),
-              };
-            }
-          })
-        );
-        setSensorsWithValues(updated);
-      } catch (err) {
-        console.error('Error fetching sensor values:', err);
-      }
-    };
+const fetchValues = async () => {
+  try {
+    const values = await client.get('/sensors/values');
+    
+    const updated = sensors.map((sensor) => ({
+      ...sensor,
+      value: values[sensor.WebId]?.Value || 'N/A',
+      unit: sensor.EngineeringUnits || '',
+      status: 'active',
+      lastUpdated: new Date().toLocaleTimeString(),
+    }));
+    
+    setSensorsWithValues(updated);
+  } catch (err) {
+    console.error('Error fetching sensor values:', err);
+  }
+};
 
     // Initial fetch
     fetchValues();

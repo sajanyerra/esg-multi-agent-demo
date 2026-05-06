@@ -6,9 +6,8 @@ python-dateutil
 requests
 python-dotenv
 groq
-langchain
-langchain-core
-langchain-groq
+langchain>=0.3.0,<1.0.0
+langchain-core>=0.3.0,<1.0.0
+langchain-groq>=0.2.0,<1.0.0
 langgraph
 streamlit
-langchain-groq

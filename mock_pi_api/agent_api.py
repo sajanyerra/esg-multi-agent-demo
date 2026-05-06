@@ -54,6 +54,27 @@ def get_sensor_value(webid: str):
         return r.json()
     except Exception as e:
         raise HTTPException(status_code=503, detail=str(e))
+    
+@api.get("/sensors/values")
+def get_all_sensor_values():
+    """Get current values for all sensors in one call"""
+    try:
+        points = requests.get(f"{PI_BASE}/points", timeout=10).json()["Items"]
+        values = {}
+        for point in points:
+            try:
+                r = requests.get(f"{PI_BASE}/streams/{point['WebId']}/value", timeout=5)
+                data = r.json()
+                values[point['WebId']] = {
+                    "Value": data.get("Value"),
+                    "Timestamp": data.get("Timestamp"),
+                    "UnitsAbbreviation": data.get("UnitsAbbreviation", ""),
+                }
+            except:
+                values[point['WebId']] = {"Value": "N/A"}
+        return values
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=str(e))
 
 
 @api.post("/analyze")
